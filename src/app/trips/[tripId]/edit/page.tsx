@@ -1,14 +1,13 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { doc, updateDoc, collection } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { useFirestore, useDoc, useUser } from '@/firebase';
 import type { Trip, Day, Activity } from '@/lib/types';
 import { AIAssistant } from '@/components/trip/ai-assistant';
 import { ItineraryPanel } from '@/components/trip/itinerary-panel';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
 
 
 export default function TripEditPage({ params }: { params: { tripId: string } }) {
@@ -64,29 +63,6 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
     }
   };
 
-  const handleCreateTrip = async () => {
-    if (!firestore || !user) return;
-    const newTripData: Omit<Trip, 'id' | 'createdAt' | 'updatedAt'> = {
-        userId: user.uid,
-        tripName: 'New Trip',
-        startDate: new Date().toISOString(),
-        endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-        destinations: [],
-        days: [
-          { date: new Date().toISOString().split('T')[0], destinationName: "Main Destination", activities: [] },
-        ],
-        totalCost: 0,
-        sharedWith: [],
-        isPublic: false,
-    };
-    const tripsCollection = collection(firestore, `users/${user.uid}/trips`);
-    await addDocumentNonBlocking(tripsCollection, {
-      ...newTripData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  };
-
   if (isTripLoading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -104,20 +80,15 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
   }
 
   if (!trip && !isTripLoading) {
-    // This could be a new trip, so we should create it
-    if (params.tripId.startsWith('trip_')) {
-      handleCreateTrip();
-      return (
+    return (
         <div className="w-full h-screen flex items-center justify-center">
             <div className="flex flex-col items-center gap-4 text-center">
                 <Loader2 className="h-12 w-12 text-primary animate-spin" />
                 <h1 className="text-2xl font-bold font-headline">Creating your new trip...</h1>
-                <p className="text-muted-foreground">Please wait a moment.</p>
+                <p className="text-muted-foreground">This may take a moment. If it takes too long, the trip might not exist.</p>
             </div>
         </div>
-      );
-    }
-    return <div className="text-center py-10"><p>Trip not found.</p></div>
+    );
   }
   
   if (!trip) return null;
