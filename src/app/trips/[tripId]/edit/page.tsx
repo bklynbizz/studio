@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { useState, useMemo } from 'react';
+import { doc, updateDoc, collection } from 'firebase/firestore';
 import { useFirestore, useDoc, useUser } from '@/firebase';
 import type { Trip, Day, Activity } from '@/lib/types';
 import { AIAssistant } from '@/components/trip/ai-assistant';
@@ -9,14 +9,18 @@ import { ItineraryPanel } from '@/components/trip/itinerary-panel';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
-import { collection } from 'firebase/firestore';
+
 
 export default function TripEditPage({ params }: { params: { tripId: string } }) {
   const { user } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
 
-  const tripRef = firestore && user ? doc(firestore, `users/${user.uid}/trips/${params.tripId}`) : null;
+  const tripRef = useMemo(() => {
+      if (!firestore || !user) return null;
+      return doc(firestore, `users/${user.uid}/trips/${params.tripId}`);
+  }, [firestore, user, params.tripId]);
+  
   const { data: trip, isLoading: isTripLoading, error: tripError } = useDoc<Trip>(tripRef);
 
   const handleAddActivity = async (day: Day, activity: Omit<Activity, 'id' | 'addedAt'>) => {
