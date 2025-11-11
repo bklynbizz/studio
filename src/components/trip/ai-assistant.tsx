@@ -13,6 +13,7 @@ import { Loader2, Bot, PlusCircle, Sparkles } from 'lucide-react';
 import { suggestActivities } from '@/ai/flows/ai-suggest-activity';
 import type { SuggestActivitiesOutput } from '@/ai/flows/ai-suggest-activity';
 import type { Trip, Day, Activity } from '@/lib/types';
+import { Label } from '@/components/ui/label';
 
 const formSchema = z.object({
   destination: z.string().min(1, 'Please enter a destination.'),
