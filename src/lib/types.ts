@@ -8,13 +8,19 @@ export type UserProfile = {
   createdAt: Timestamp;
 };
 
+export type Location = {
+    lat: number;
+    lng: number;
+}
+
 export type Activity = {
   id: string;
   name: string;
   description: string;
   category: 'attraction' | 'restaurant' | 'activity' | 'entertainment' | 'shopping' | 'nature' | 'other';
   time?: string; // e.g., "09:00"
-  location: string;
+  location: string | Location;
+  locationName?: string;
   estimatedCost?: string;
   currency?: string;
   duration?: string;

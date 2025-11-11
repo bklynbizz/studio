@@ -6,10 +6,13 @@ import { useFirestore, useUser, useDoc } from '@/firebase';
 import type { Trip, Day, Activity } from '@/lib/types';
 import { AIAssistant } from '@/components/trip/ai-assistant';
 import { ItineraryPanel } from '@/components/trip/itinerary-panel';
-import { Loader2 } from 'lucide-react';
+import { Loader2, List, Map as MapIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MapView } from '@/components/trip/map-view';
+import { TripHeader } from '@/components/trip/trip-header';
 
 export default function TripEditPage({ params }: { params: { tripId: string } }) {
   const { tripId } = use(params);
@@ -143,7 +146,7 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
             <div className="flex flex-col items-center gap-4 text-center">
                 <h1 className="text-2xl font-bold font-headline">Trip not found.</h1>
                 <p className="text-muted-foreground">We couldn't find the trip you were looking for.</p>
-                <Button onClick={() => router.push('/dashboard')}>Go to Dashboard</Button>
+                <button onClick={() => router.push('/dashboard')}>Go to Dashboard</button>
             </div>
         </div>
       )
@@ -165,9 +168,23 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </div>
         )}
+      <div className="flex-shrink-0 p-4 border-b">
+         <TripHeader trip={trip} onUpdateTrip={handleUpdateTrip} />
+      </div>
       <div className="flex flex-grow overflow-hidden">
-        <div className="w-1/2 h-full overflow-y-auto border-r">
-          <ItineraryPanel trip={trip} onUpdateTrip={handleUpdateTrip} />
+        <div className="w-1/2 h-full overflow-y-auto border-r p-4">
+             <Tabs defaultValue="itinerary" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="itinerary"><List className="mr-2 h-4 w-4"/>Itinerary</TabsTrigger>
+                    <TabsTrigger value="map"><MapIcon className="mr-2 h-4 w-4"/>Map</TabsTrigger>
+                </TabsList>
+                <TabsContent value="itinerary">
+                    <ItineraryPanel trip={trip} onUpdateTrip={handleUpdateTrip} />
+                </TabsContent>
+                <TabsContent value="map" className="h-[calc(100vh-20rem)] w-full">
+                   <MapView trip={trip} />
+                </TabsContent>
+            </Tabs>
         </div>
         <div className="w-1/2 h-full overflow-y-auto">
           <AIAssistant trip={trip} onAddActivity={handleAddActivity} />

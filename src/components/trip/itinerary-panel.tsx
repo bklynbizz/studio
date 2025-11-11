@@ -4,7 +4,6 @@ import type { Trip, Day, Activity } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Wallet, Landmark, UtensilsCrossed, Plane, Bot } from 'lucide-react';
-import { TripHeader } from './trip-header';
 
 type ItineraryPanelProps = {
   trip: Trip;
@@ -20,10 +19,8 @@ const categoryIcons: { [key: string]: React.ReactNode } = {
 
 export function ItineraryPanel({ trip, onUpdateTrip }: ItineraryPanelProps) {
   return (
-    <div className="p-4">
-      <TripHeader trip={trip} onUpdateTrip={onUpdateTrip} />
-
-      <Card className="mt-4">
+    <div className="pt-4">
+      <Card>
         <CardContent className="p-6">
           <div className="space-y-8">
             {trip.days && trip.days.length > 0 ? (
@@ -46,7 +43,7 @@ export function ItineraryPanel({ trip, onUpdateTrip }: ItineraryPanelProps) {
                                           <div className="flex justify-between items-start">
                                               <div>
                                                   <p className="font-semibold text-lg">{activity.name}</p>
-                                                  <p className="text-sm text-muted-foreground">{activity.location}</p>
+                                                  <p className="text-sm text-muted-foreground">{typeof activity.location === 'object' ? (activity as any).locationName : activity.location}</p>
                                               </div>
                                               <div className="text-right flex-shrink-0 ml-4">
                                                   {activity.time && <p className="font-bold text-lg">{activity.time}</p>}
