@@ -13,10 +13,10 @@ import { CheckCircle2, Map, Bot, Share2, Users, Wallet, Calendar, Plane } from '
 import { Header } from '@/components/layout/header';
 
 const features = [
-  { icon: Bot, title: 'AI Activity Suggestions', description: 'Get smart recommendations for activities, restaurants, and attractions tailored to your interests.' },
-  { icon: Plane, title: 'Clean Timeline View', description: 'Visualize your entire trip in a clean, chronological day-by-day layout.' },
+  { icon: Bot, title: 'AI Activity Suggestions', description: 'Get smart recommendations for activities, restaurants, and attractions tailored to your interests.', href: '/trips/trip_1762835524846/edit' },
+  { icon: Plane, title: 'Clean Timeline View', description: 'Visualize your entire trip in a clean, chronological day-by-day layout.', href: '/trips/trip_1762835524846/edit' },
   { icon: Users, title: 'Collaborative Planning', description: 'Invite friends and family to plan your trip together in real-time.' },
-  { icon: Wallet, title: 'Cost Tracking', description: 'Keep an eye on your budget with per-activity cost entry and trip-wide totals.' },
+  { icon: Wallet, title: 'Cost Tracking', description: 'Keep an eye on your budget with per-activity cost entry and trip-wide totals.', href: '/trips/trip_1762835524846/edit' },
   { icon: Share2, title: 'Shareable Itineraries', description: 'Easily share a beautiful, read-only version of your itinerary with anyone.' },
   { icon: Map, title: 'Map Integration', description: 'View all your planned activities and destinations plotted on an interactive map.' },
 ];
@@ -133,18 +133,23 @@ export default function Home() {
             <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:max-w-none lg:grid-cols-3 mt-12">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
+                const Wrapper = feature.href ? Link : 'div';
+                const wrapperProps = feature.href ? { href: feature.href } : {};
+
                 return (
-                  <Card key={index} className="h-full">
-                    <CardHeader className="flex flex-row items-center gap-4">
-                      <div className="p-3 bg-primary/10 rounded-full">
-                        <Icon className="w-6 h-6 text-primary" />
-                      </div>
-                      <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">{feature.description}</p>
-                    </CardContent>
-                  </Card>
+                  <Wrapper key={index} {...wrapperProps}>
+                    <Card className={`h-full ${feature.href ? 'transition-all hover:shadow-lg hover:border-primary/50' : ''}`}>
+                      <CardHeader className="flex flex-row items-center gap-4">
+                        <div className="p-3 bg-primary/10 rounded-full">
+                          <Icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </CardContent>
+                    </Card>
+                  </Wrapper>
                 );
               })}
             </div>
