@@ -41,10 +41,10 @@ const faqs = [
 
 export default function Home() {
   const heroImage = {
-      "id": "hero-image",
-      "description": "A stunning collage of various travel destinations, including mountains, cities, and beaches, conveying a sense of adventure.",
-      "imageUrl": "https://images.unsplash.com/photo-1610206587623-2afc395a3ca5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0cmF2ZWwlMjBjb2xsYWdlfGVufDB8fHx8MTc2Mjc5MTAyNXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "travel collage"
+      id: "hero-image",
+      description: "Two hikers with backpacks walking in a lush, mountainous forest landscape.",
+      imageUrl: "https://images.unsplash.com/photo-1638635900836-26badb9fb9c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtb3VudGFpbiUyMGhpa2luZ3xlbnwwfHx8fDE3NjI2OTM2NTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      imageHint: "mountain hiking"
     };
 
   return (
