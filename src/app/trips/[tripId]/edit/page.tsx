@@ -1,26 +1,62 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useFirestore, useDoc, useUser } from '@/firebase';
 import type { Trip, Day, Activity } from '@/lib/types';
 import { AIAssistant } from '@/components/trip/ai-assistant';
 import { ItineraryPanel } from '@/components/trip/itinerary-panel';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 
-export default function TripEditPage({ params }: { params: { tripId: string } }) {
+export default function TripEditPage({ params: { tripId } }: { params: { tripId: string } }) {
   const { user } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
+  const router = useRouter();
 
   const tripRef = useMemo(() => {
       if (!firestore || !user) return null;
-      return doc(firestore, `users/${user.uid}/trips/${params.tripId}`);
-  }, [firestore, user, params.tripId]);
+      return doc(firestore, `users/${user.uid}/trips/${tripId}`);
+  }, [firestore, user, tripId]);
   
   const { data: trip, isLoading: isTripLoading, error: tripError } = useDoc<Trip>(tripRef);
+
+  // This effect creates the trip document if it doesn't exist.
+  // This is useful when navigating from the "new trip" page.
+  useMemo(() => {
+    if (tripRef && !trip && !isTripLoading) {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const newTripData: Omit<Trip, 'id'> = {
+        userId: user!.uid,
+        tripName: 'My New Adventure',
+        startDate: today.toISOString(),
+        endDate: tomorrow.toISOString(),
+        destinations: [],
+        days: [],
+        totalCost: 0,
+        sharedWith: [],
+        isPublic: false,
+        createdAt: serverTimestamp() as any,
+        updatedAt: serverTimestamp() as any,
+      };
+      setDoc(tripRef, newTripData).catch(err => {
+         console.error("Failed to create trip document", err);
+         toast({
+            variant: "destructive",
+            title: "Error Creating Trip",
+            description: "Could not create the new trip document in the database.",
+         });
+         router.push('/dashboard');
+      });
+    }
+  }, [tripRef, trip, isTripLoading, user, toast, router]);
+
 
   const handleAddActivity = async (day: Day, activity: Omit<Activity, 'id' | 'addedAt'>) => {
     if (!tripRef || !trip) return;
@@ -47,7 +83,7 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
       
       const newTotalCost = trip.totalCost + (Number(activity.estimatedCost) || 0);
 
-      await updateDoc(tripRef, { days: updatedDays, totalCost: newTotalCost });
+      await updateDoc(tripRef, { days: updatedDays, totalCost: newTotalCost, updatedAt: serverTimestamp() });
 
       toast({
         title: 'Activity Added!',
@@ -63,10 +99,14 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
     }
   };
 
-  if (isTripLoading) {
+  if (isTripLoading || (!trip && !tripError)) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <Loader2 className="h-12 w-12 text-primary animate-spin" />
+        <div className="flex flex-col items-center gap-4 text-center">
+            <Loader2 className="h-12 w-12 text-primary animate-spin" />
+            <h1 className="text-2xl font-bold font-headline">Loading your trip...</h1>
+            <p className="text-muted-foreground">This may take a moment.</p>
+        </div>
       </div>
     );
   }
@@ -80,15 +120,15 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
   }
 
   if (!trip && !isTripLoading) {
-    return (
+      return (
         <div className="w-full h-screen flex items-center justify-center">
             <div className="flex flex-col items-center gap-4 text-center">
-                <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                <h1 className="text-2xl font-bold font-headline">Creating your new trip...</h1>
-                <p className="text-muted-foreground">This may take a moment. If it takes too long, the trip might not exist.</p>
+                <h1 className="text-2xl font-bold font-headline">Trip not found.</h1>
+                <p className="text-muted-foreground">We couldn't find the trip you were looking for.</p>
+                <Button onClick={() => router.push('/dashboard')}>Go to Dashboard</Button>
             </div>
         </div>
-    );
+      )
   }
   
   if (!trip) return null;
