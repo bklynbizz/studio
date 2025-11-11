@@ -5,7 +5,6 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import { initializeFirebase } from '@/firebase';
 
 // Combined state for the Firebase context
 export interface FirebaseContextState {
@@ -20,11 +19,21 @@ export interface FirebaseContextState {
 // React Context
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
 
+interface FirebaseProviderProps {
+  children: ReactNode;
+  firebaseApp: FirebaseApp | null;
+  auth: Auth | null;
+  firestore: Firestore | null;
+}
+
 /**
  * FirebaseProvider manages and provides Firebase services and user authentication state.
  */
-export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
+export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   children,
+  firebaseApp,
+  auth,
+  firestore,
 }) => {
   const [userAuthState, setUserAuthState] = useState<{
     user: User | null;
@@ -35,10 +44,6 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({
     isUserLoading: true,
     userError: null,
   });
-
-  const { firebaseApp, auth, firestore } = useMemo(() => {
-    return initializeFirebase();
-  }, []);
 
   useEffect(() => {
     if (!auth) {

@@ -1,5 +1,1 @@
-'use client';
-
-import { useUser } from '@/firebase/provider';
-
-export const useAuth = useUser;
+// This file is no longer needed and can be deleted.

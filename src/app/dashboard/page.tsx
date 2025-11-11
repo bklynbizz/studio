@@ -3,13 +3,39 @@ import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { placeholderImages } from '@/lib/placeholder-images';
 
 // This is mock data. In a real application, this would come from Firestore.
 const mockTrips = [
   { id: '1', name: 'Paris Adventure', dates: 'Nov 15-20, 2025', destinations: 3, cost: 1450, currency: 'EUR', imageId: 'paris-trip' },
   { id: '2', name: 'Tokyo Explorer', dates: 'Dec 1-7, 2025', destinations: 2, cost: 180000, currency: 'JPY', imageId: 'tokyo-trip' },
 ];
+
+const placeholderImages = [
+    {
+      "id": "hero-image",
+      "description": "A stunning collage of various travel destinations, including mountains, cities, and beaches, conveying a sense of adventure.",
+      "imageUrl": "https://images.unsplash.com/photo-1610206587623-2afc395a3ca5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0cmF2ZWwlMjBjb2xsYWdlfGVufDB8fHx8MTc2Mjc5MTAyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "travel collage"
+    },
+    {
+      "id": "paris-trip",
+      "description": "A picture of the Eiffel Tower in Paris on a sunny day.",
+      "imageUrl": "https://images.unsplash.com/photo-1516437097933-e351e288df02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwYXJpcyUyMGNpdHl8ZW58MHx8fHwxNzYyODIzNzEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "paris city"
+    },
+    {
+      "id": "tokyo-trip",
+      "description": "A vibrant street scene in Tokyo at night with neon lights.",
+      "imageUrl": "https://images.unsplash.com/photo-1554058501-f6872d688003?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dG9reW8lMjBzdHJlZXR8ZW58MHx8fHwxNzYyNzI1OTg1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tokyo street"
+    },
+    {
+      "id": "new-trip",
+      "description": "An inspiring image of a map and a compass on a wooden table.",
+      "imageUrl": "https://images.unsplash.com/photo-1542383578-4cb83f35eac0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYXAlMjBjb21wYXNzfGVufDB8fHx8MTc2MjgyNzQzMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "map compass"
+    }
+  ];
 
 
 export default function DashboardPage() {

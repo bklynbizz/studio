@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/accordion';
 import { CheckCircle2, Map, Bot, Share2, Users, Wallet, Calendar, Plane } from 'lucide-react';
 import { Header } from '@/components/layout/header';
-import { placeholderImages } from '@/lib/placeholder-images';
 
 const features = [
   { icon: Bot, title: 'AI Activity Suggestions', description: 'Get smart recommendations for activities, restaurants, and attractions tailored to your interests.' },
@@ -41,7 +40,12 @@ const faqs = [
   ];
 
 export default function Home() {
-  const heroImage = placeholderImages.find(p => p.id === 'hero-image');
+  const heroImage = {
+      "id": "hero-image",
+      "description": "A stunning collage of various travel destinations, including mountains, cities, and beaches, conveying a sense of adventure.",
+      "imageUrl": "https://images.unsplash.com/photo-1610206587623-2afc395a3ca5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0cmF2ZWwlMjBjb2xsYWdlfGVufDB8fHx8MTc2Mjc5MTAyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "travel collage"
+    };
 
   return (
     <div className="flex flex-col min-h-screen">
