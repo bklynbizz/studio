@@ -47,6 +47,7 @@ export function AuthForm({ isSignUp = false }: AuthFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!auth || !firestore) return;
     setIsLoading(true);
     try {
       let userCredential;
@@ -82,6 +83,7 @@ export function AuthForm({ isSignUp = false }: AuthFormProps) {
   };
   
   const handleGoogleSignIn = async () => {
+    if (!auth || !firestore) return;
     setIsLoading(true);
     const provider = new GoogleAuthProvider();
     try {
@@ -94,7 +96,7 @@ export function AuthForm({ isSignUp = false }: AuthFormProps) {
             displayName: user.displayName,
             photoURL: user.photoURL,
             createdAt: serverTimestamp(),
-        }, { merge: true }); // Merge to avoid overwriting existing data if user signs up differently first
+        }, { merge: true });
 
         toast({
             title: 'Logged in with Google!',

@@ -2,6 +2,4 @@
 
 import { useUser } from '@/firebase/provider';
 
-export const useAuth = () => {
-    return useUser();
-};
+export const useAuth = useUser;
