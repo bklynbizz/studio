@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useMemo, use } from 'react';
+import { useMemo, use } from 'react';
 import { doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { useFirestore, useDoc, useUser } from '@/firebase';
+import { useFirestore, useUser } from '@/firebase';
 import type { Trip, Day, Activity } from '@/lib/types';
 import { AIAssistant } from '@/components/trip/ai-assistant';
 import { ItineraryPanel } from '@/components/trip/itinerary-panel';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-
+import Image from 'next/image';
 
 export default function TripEditPage({ params }: { params: { tripId: string } }) {
   const { tripId } = use(params);
@@ -100,6 +100,23 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
     }
   };
 
+  const handleUpdateTrip = async (updatedFields: Partial<Trip>) => {
+    if (!tripRef) return;
+    try {
+        await updateDoc(tripRef, {
+            ...updatedFields,
+            updatedAt: serverTimestamp(),
+        });
+    } catch (error: any) {
+        console.error("Error updating trip: ", error);
+        toast({
+            variant: "destructive",
+            title: "Update Failed",
+            description: error.message || "Could not update the trip details.",
+        });
+    }
+};
+
   if (isTripLoading || (!trip && !tripError)) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -135,12 +152,26 @@ export default function TripEditPage({ params }: { params: { tripId: string } })
   if (!trip) return null;
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex">
-      <div className="w-1/2 h-full overflow-y-auto border-r">
-        <ItineraryPanel trip={trip} />
-      </div>
-      <div className="w-1/2 h-full overflow-y-auto">
-        <AIAssistant trip={trip} onAddActivity={handleAddActivity} />
+    <div className="h-[calc(100vh-4rem)] flex flex-col">
+       {trip.coverImage && (
+            <div className="relative h-48 w-full flex-shrink-0">
+                <Image
+                    src={trip.coverImage.url}
+                    alt={trip.tripName}
+                    fill
+                    className="object-cover"
+                    data-ai-hint={trip.coverImage.aiHint}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            </div>
+        )}
+      <div className="flex flex-grow overflow-hidden">
+        <div className="w-1/2 h-full overflow-y-auto border-r">
+          <ItineraryPanel trip={trip} onUpdateTrip={handleUpdateTrip} />
+        </div>
+        <div className="w-1/2 h-full overflow-y-auto">
+          <AIAssistant trip={trip} onAddActivity={handleAddActivity} />
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,14 @@
 'use client';
 
 import type { Trip, Day, Activity } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Wallet, Landmark, UtensilsCrossed, Plane, Bot } from 'lucide-react';
+import { TripHeader } from './trip-header';
 
 type ItineraryPanelProps = {
   trip: Trip;
+  onUpdateTrip: (updatedFields: Partial<Trip>) => Promise<void>;
 };
 
 const categoryIcons: { [key: string]: React.ReactNode } = {
@@ -16,21 +18,13 @@ const categoryIcons: { [key: string]: React.ReactNode } = {
     default: <MapPin className="h-5 w-5 text-accent" />,
 };
 
-export function ItineraryPanel({ trip }: ItineraryPanelProps) {
+export function ItineraryPanel({ trip, onUpdateTrip }: ItineraryPanelProps) {
   return (
     <div className="p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline text-3xl">{trip.tripName}</CardTitle>
-          <CardDescription>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground mt-2">
-                <span className="flex items-center gap-2"><Calendar className="h-4 w-4" /> {new Date(trip.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(trip.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                <span className="flex items-center gap-2"><MapPin className="h-4 w-4" /> {trip.destinations?.length || 0} Destination{(trip.destinations?.length || 0) !== 1 ? 's' : ''}</span>
-                <span className="flex items-center gap-2"><Wallet className="h-4 w-4" /> Est. {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(trip.totalCost)}</span>
-            </div>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <TripHeader trip={trip} onUpdateTrip={onUpdateTrip} />
+
+      <Card className="mt-4">
+        <CardContent className="p-6">
           <div className="space-y-8">
             {trip.days && trip.days.length > 0 ? (
               trip.days.map((day, dayIndex) => (
