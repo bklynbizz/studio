@@ -14,8 +14,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase/firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
+import { auth, db, getGoogleProvider } from '@/lib/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -82,7 +82,7 @@ export function AuthForm({ isSignUp = false }: AuthFormProps) {
   
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
-    const provider = new GoogleAuthProvider();
+    const provider = getGoogleProvider();
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
