@@ -1,0 +1,302 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the TravelWise application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user account was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "displayName",
+        "email",
+        "createdAt"
+      ]
+    },
+    "Trip": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Trip",
+      "type": "object",
+      "description": "Represents a travel trip planned by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the trip entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Trip). The ID of the user who created the trip."
+        },
+        "tripName": {
+          "type": "string",
+          "description": "The name of the trip."
+        },
+        "startDate": {
+          "type": "string",
+          "description": "The start date of the trip.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "The end date of the trip.",
+          "format": "date-time"
+        },
+        "destinations": {
+          "type": "array",
+          "description": "An array of destinations included in the trip.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "totalCost": {
+          "type": "number",
+          "description": "The total estimated cost of the trip."
+        },
+        "shareId": {
+          "type": "string",
+          "description": "A unique ID used for sharing the trip."
+        },
+        "sharedWith": {
+          "type": "array",
+          "description": "References to Users. (Relationship: User N:N Trip). An array of user IDs with whom the trip is shared.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Indicates whether the trip is publicly accessible."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the trip was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the trip was last updated.",
+          "format": "date-time"
+        },
+        "days": {
+          "type": "array",
+          "description": "An array of Day objects, representing the itinerary for each day of the trip.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "tripName",
+        "startDate",
+        "endDate"
+      ]
+    },
+    "Day": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Day",
+      "type": "object",
+      "description": "Represents a single day within a trip itinerary.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the day entity."
+        },
+        "tripId": {
+          "type": "string",
+          "description": "Reference to Trip. (Relationship: Trip 1:N Day) The ID of the trip to which this day belongs."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date of the day.",
+          "format": "date-time"
+        },
+        "destination": {
+          "type": "string",
+          "description": "The destination for the day."
+        },
+        "activities": {
+          "type": "array",
+          "description": "References to Activity. (Relationship: Day 1:N Activity) An array of activity IDs planned for the day.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "tripId",
+        "date",
+        "destination"
+      ]
+    },
+    "Activity": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Activity",
+      "type": "object",
+      "description": "Represents a single activity within a day's itinerary.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the activity entity."
+        },
+        "dayId": {
+          "type": "string",
+          "description": "Reference to Day. (Relationship: Day 1:N Activity) The ID of the day to which this activity belongs."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the activity."
+        },
+        "time": {
+          "type": "string",
+          "description": "The time of the activity."
+        },
+        "location": {
+          "type": "string",
+          "description": "The location of the activity."
+        },
+        "cost": {
+          "type": "number",
+          "description": "The estimated cost of the activity."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Any notes or remarks about the activity."
+        },
+        "aiGenerated": {
+          "type": "boolean",
+          "description": "Indicates whether the activity was suggested by the AI."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the activity (e.g., attraction, restaurant)."
+        }
+      },
+      "required": [
+        "id",
+        "dayId",
+        "name"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information. Accessible only by the user with the matching userId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/trips/{tripId}",
+        "definition": {
+          "entityName": "Trip",
+          "schema": {
+            "$ref": "#/backend/entities/Trip"
+          },
+          "description": "Stores trip information for a specific user. Includes denormalized 'userId' and 'sharedWith' for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who created the trip."
+            },
+            {
+              "name": "tripId",
+              "description": "The unique identifier of the trip."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/trips/{tripId}/days/{dayId}",
+        "definition": {
+          "entityName": "Day",
+          "schema": {
+            "$ref": "#/backend/entities/Day"
+          },
+          "description": "Stores day information for a specific trip. Inherits authorization context from the parent trip.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who created the trip."
+            },
+            {
+              "name": "tripId",
+              "description": "The unique identifier of the trip."
+            },
+            {
+              "name": "dayId",
+              "description": "The unique identifier of the day."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/trips/{tripId}/days/{dayId}/activities/{activityId}",
+        "definition": {
+          "entityName": "Activity",
+          "schema": {
+            "$ref": "#/backend/entities/Activity"
+          },
+          "description": "Stores activity information for a specific day within a trip. Inherits authorization context from the parent day.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who created the trip."
+            },
+            {
+              "name": "tripId",
+              "description": "The unique identifier of the trip."
+            },
+            {
+              "name": "dayId",
+              "description": "The unique identifier of the day."
+            },
+            {
+              "name": "activityId",
+              "description": "The unique identifier of the activity."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support the TravelWise application's core features, focusing on user authentication, trip planning, AI-powered suggestions, and itinerary management. The structure emphasizes authorization independence and efficient data retrieval through denormalization and structural segregation.\n\n**Authorization Independence:**\nAuthorization is enforced through path-based ownership and membership maps, eliminating the need for `get()` calls in security rules. For example, trips are stored under `/users/{userId}/trips/{tripId}`, making it straightforward to control access based on the `userId`. Collaborative access is managed via the `sharedWith` array in the `Trip` document, effectively denormalizing the user-trip relationship.\n\n**Structural Segregation:**\nThe structure segregates data based on access requirements. User profiles are stored in `/users/{userId}`, ensuring private access. Public trips are stored under `/users/{userId}/trips/{tripId}`. This segregation allows for simpler and more robust security rules.\n\n**QAPs (Rules are not Filters):**\nThe data structure facilitates secure `list` operations by aligning document paths with authorization requirements. Listing trips under a user's path (`/users/{userId}/trips`) inherently restricts access to only the trips owned or shared with that user. Public trips, if implemented, would reside in a separate collection (e.g., `/public_trips`) to prevent unauthorized access to private trip data during `list` operations.\n\n**Access Modeling:**\n- **Private Data:** User profiles are stored using path-based ownership (`/users/{userId}`).\n- **User-Owned Data:** Trips are stored under `/users/{userId}/trips/{tripId}`, indicating a one-to-many relationship between users and trips.\n- **Collaborative Data:** The `sharedWith` array in the `Trip` document implements a membership model for collaborative access.\n\nThis structure enables scalable and maintainable security rules while supporting the application's core features and scalability goals."
+  }
+}
