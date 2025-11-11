@@ -2,7 +2,7 @@
 
 import { useMemo, use } from 'react';
 import { doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { useFirestore, useUser } from '@/firebase';
+import { useFirestore, useUser, useDoc } from '@/firebase';
 import type { Trip, Day, Activity } from '@/lib/types';
 import { AIAssistant } from '@/components/trip/ai-assistant';
 import { ItineraryPanel } from '@/components/trip/itinerary-panel';
