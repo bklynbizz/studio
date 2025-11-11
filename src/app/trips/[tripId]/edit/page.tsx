@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, use } from 'react';
 import { doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useFirestore, useDoc, useUser } from '@/firebase';
 import type { Trip, Day, Activity } from '@/lib/types';
@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 
 
 export default function TripEditPage({ params }: { params: { tripId: string } }) {
-  const { tripId } = params;
+  const { tripId } = use(params);
   const { user } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
