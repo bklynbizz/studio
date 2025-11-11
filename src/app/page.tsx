@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -99,13 +100,13 @@ export default function Home() {
                         <h3 className="text-xl font-bold mb-2 font-headline">1. Add Destinations</h3>
                         <p className="text-muted-foreground">Start by creating a new trip and adding the cities you want to visit, along with your travel dates.</p>
                     </div>
-                    <div className="flex flex-col items-center text-center p-6 rounded-lg">
+                    <Link href="/trips/trip_1762835524846/edit" className="flex flex-col items-center text-center p-6 rounded-lg transition-all hover:bg-muted">
                          <div className="p-4 bg-primary/10 rounded-full mb-4">
                             <Bot className="w-10 h-10 text-primary" />
                         </div>
                         <h3 className="text-xl font-bold mb-2 font-headline">2. Get AI Suggestions</h3>
                         <p className="text-muted-foreground">Ask our AI travel assistant for recommendations on activities, restaurants, or hidden gems. Add them to your plan with a single click.</p>
-                    </div>
+                    </Link>
                     <div className="flex flex-col items-center text-center p-6 rounded-lg">
                         <div className="p-4 bg-primary/10 rounded-full mb-4">
                             <Share2 className="w-10 h-10 text-primary" />
