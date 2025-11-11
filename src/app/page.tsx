@@ -137,15 +137,15 @@ export default function Home() {
                 const wrapperProps = feature.href ? { href: feature.href } : {};
 
                 return (
-                  <Wrapper key={index} {...wrapperProps}>
-                    <Card className={`h-full ${feature.href ? 'transition-all hover:shadow-lg hover:border-primary/50' : ''}`}>
+                  <Wrapper key={index} {...wrapperProps} className="flex flex-col">
+                    <Card className={`h-full flex flex-col ${feature.href ? 'transition-all hover:shadow-lg hover:border-primary/50' : ''}`}>
                       <CardHeader className="flex flex-row items-center gap-4">
                         <div className="p-3 bg-primary/10 rounded-full">
                           <Icon className="w-6 h-6 text-primary" />
                         </div>
                         <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="flex-grow">
                         <p className="text-muted-foreground">{feature.description}</p>
                       </CardContent>
                     </Card>
