@@ -11,7 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
 
-export default function TripEditPage({ params: { tripId } }: { params: { tripId: string } }) {
+export default function TripEditPage({ params }: { params: { tripId: string } }) {
+  const { tripId } = params;
   const { user } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
