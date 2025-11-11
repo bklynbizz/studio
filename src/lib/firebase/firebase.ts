@@ -13,6 +13,8 @@ const functions = getFunctions(app);
 // Helper for Google Sign-In
 export const getGoogleProvider = () => {
     const provider = new GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
     return provider;
 }
 
