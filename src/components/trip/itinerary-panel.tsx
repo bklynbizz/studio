@@ -23,58 +23,66 @@ export function ItineraryPanel({ trip }: ItineraryPanelProps) {
         <CardHeader>
           <CardTitle className="font-headline text-3xl">{trip.tripName}</CardTitle>
           <CardDescription>
-            <div className="flex items-center gap-4 text-muted-foreground mt-2">
-                <span className="flex items-center gap-2"><Calendar className="h-4 w-4" /> {new Date(trip.startDate).toLocaleDateString()} - {new Date(trip.endDate).toLocaleDateString()}</span>
-                <span className="flex items-center gap-2"><MapPin className="h-4 w-4" /> {trip.destinations.length} Destination{trip.destinations.length > 1 ? 's' : ''}</span>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground mt-2">
+                <span className="flex items-center gap-2"><Calendar className="h-4 w-4" /> {new Date(trip.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(trip.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span className="flex items-center gap-2"><MapPin className="h-4 w-4" /> {trip.destinations?.length || 0} Destination{(trip.destinations?.length || 0) !== 1 ? 's' : ''}</span>
                 <span className="flex items-center gap-2"><Wallet className="h-4 w-4" /> Est. {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(trip.totalCost)}</span>
             </div>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-8">
-            {trip.days.map((day, dayIndex) => (
-              <div key={dayIndex}>
-                <div className="flex items-baseline gap-4 mb-4">
-                  <h2 className="text-2xl font-bold font-headline">Day {dayIndex + 1}</h2>
-                  <p className="text-muted-foreground">{new Date(day.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} - <span className="font-medium text-foreground">{day.destinationName}</span></p>
-                </div>
+            {trip.days && trip.days.length > 0 ? (
+              trip.days.map((day, dayIndex) => (
+                <div key={dayIndex}>
+                  <div className="flex items-baseline gap-4 mb-4">
+                    <h2 className="text-2xl font-bold font-headline">Day {dayIndex + 1}</h2>
+                    <p className="text-muted-foreground">{new Date(day.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} - <span className="font-medium text-foreground">{day.destinationName}</span></p>
+                  </div>
 
-                <div className="relative pl-8 space-y-6 border-l-2 border-border/70">
-                    {day.activities.length > 0 ? (
-                        day.activities.map((activity, activityIndex) => (
-                            <div key={activity.id || activityIndex} className="relative">
-                                <div className="absolute -left-[2.1rem] top-1 flex h-8 w-8 items-center justify-center rounded-full bg-card border-2">
-                                    {categoryIcons[activity.category] || categoryIcons.default}
-                                </div>
-                                <Card className="ml-4">
-                                    <CardContent className="p-4">
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <p className="font-semibold text-lg">{activity.name}</p>
-                                                <p className="text-sm text-muted-foreground">{activity.location}</p>
-                                            </div>
-                                            <div className="text-right flex-shrink-0 ml-4">
-                                                {activity.time && <p className="font-bold text-lg">{activity.time}</p>}
-                                                {activity.estimatedCost && <p className="text-sm text-muted-foreground">{activity.estimatedCost} {activity.currency}</p>}
-                                            </div>
-                                        </div>
-                                        <div className="text-sm mt-2 text-muted-foreground space-y-1">
-                                            {activity.duration && <p>Duration: {activity.duration}</p>}
-                                            {activity.notes && <p>Notes: {activity.notes}</p>}
-                                            {activity.aiGenerated && (
-                                                <p className="flex items-center text-xs text-primary/80 gap-1"><Bot className="h-3 w-3" /> AI Suggested</p>
-                                            )}
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-muted-foreground italic pl-4">No activities planned for this day. Use the AI Assistant to get some ideas!</p>
-                    )}
+                  <div className="relative pl-8 space-y-6 border-l-2 border-border/70">
+                      {day.activities && day.activities.length > 0 ? (
+                          day.activities.map((activity, activityIndex) => (
+                              <div key={activity.id || activityIndex} className="relative">
+                                  <div className="absolute -left-[2.1rem] top-1 flex h-8 w-8 items-center justify-center rounded-full bg-card border-2">
+                                      {categoryIcons[activity.category] || categoryIcons.default}
+                                  </div>
+                                  <Card className="ml-4">
+                                      <CardContent className="p-4">
+                                          <div className="flex justify-between items-start">
+                                              <div>
+                                                  <p className="font-semibold text-lg">{activity.name}</p>
+                                                  <p className="text-sm text-muted-foreground">{activity.location}</p>
+                                              </div>
+                                              <div className="text-right flex-shrink-0 ml-4">
+                                                  {activity.time && <p className="font-bold text-lg">{activity.time}</p>}
+                                                  {activity.estimatedCost && <p className="text-sm text-muted-foreground">{activity.estimatedCost} {activity.currency}</p>}
+                                              </div>
+                                          </div>
+                                          <div className="text-sm mt-2 text-muted-foreground space-y-1">
+                                              {activity.duration && <p>Duration: {activity.duration}</p>}
+                                              {activity.notes && <p>Notes: {activity.notes}</p>}
+                                              {activity.aiGenerated && (
+                                                  <p className="flex items-center text-xs text-primary/80 gap-1"><Bot className="h-3 w-3" /> AI Suggested</p>
+                                              )}
+                                          </div>
+                                      </CardContent>
+                                  </Card>
+                              </div>
+                          ))
+                      ) : (
+                          <p className="text-muted-foreground italic pl-4">No activities planned for this day. Use the AI Assistant to get some ideas!</p>
+                      )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+                <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                    <Calendar className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-4 text-lg font-medium text-foreground">Your Itinerary is Empty</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Use the AI Assistant to start adding activities to your trip.</p>
+                </div>
+            )}
           </div>
         </CardContent>
       </Card>
