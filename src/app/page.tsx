@@ -93,13 +93,13 @@ export default function Home() {
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="flex flex-col items-center text-center p-6 rounded-lg">
+                    <Link href="/trips/new" className="flex flex-col items-center text-center p-6 rounded-lg transition-all hover:bg-muted">
                         <div className="p-4 bg-primary/10 rounded-full mb-4">
                             <Map className="w-10 h-10 text-primary" />
                         </div>
                         <h3 className="text-xl font-bold mb-2 font-headline">1. Add Destinations</h3>
                         <p className="text-muted-foreground">Start by creating a new trip and adding the cities you want to visit, along with your travel dates.</p>
-                    </div>
+                    </Link>
                     <Link href="/trips/trip_1762835524846/edit" className="flex flex-col items-center text-center p-6 rounded-lg transition-all hover:bg-muted">
                          <div className="p-4 bg-primary/10 rounded-full mb-4">
                             <Bot className="w-10 h-10 text-primary" />
