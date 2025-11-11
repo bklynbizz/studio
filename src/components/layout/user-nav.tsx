@@ -11,15 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/hooks/use-auth';
+import { useUser, useFirebase } from '@/firebase/provider';
 import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import { CreditCard, LayoutDashboard, LogOut, Plane, Settings, User } from 'lucide-react';
 import Link from 'next/link';
 
 export function UserNav() {
-  const { user } = useAuth();
+  const { user } = useUser();
+  const { auth } = useFirebase();
   const router = useRouter();
 
   const handleSignOut = async () => {

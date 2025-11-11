@@ -14,8 +14,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
-import { auth, db, getGoogleProvider } from '@/lib/firebase/firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, updateProfile, GoogleAuthProvider } from 'firebase/auth';
+import { useFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -35,6 +35,7 @@ export function AuthForm({ isSignUp = false }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { auth, firestore } = useFirebase();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,7 +55,7 @@ export function AuthForm({ isSignUp = false }: AuthFormProps) {
         if (values.displayName) {
           await updateProfile(userCredential.user, { displayName: values.displayName });
         }
-        await setDoc(doc(db, "users", userCredential.user.uid), {
+        await setDoc(doc(firestore, "users", userCredential.user.uid), {
             uid: userCredential.user.uid,
             email: userCredential.user.email,
             displayName: values.displayName || userCredential.user.displayName,
@@ -82,12 +83,12 @@ export function AuthForm({ isSignUp = false }: AuthFormProps) {
   
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
-    const provider = getGoogleProvider();
+    const provider = new GoogleAuthProvider();
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        await setDoc(doc(db, "users", user.uid), {
+        await setDoc(doc(firestore, "users", user.uid), {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
