@@ -13,10 +13,6 @@ const functions = getFunctions(app);
 // Helper for Google Sign-In
 export const getGoogleProvider = () => {
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({
-        'auth_type': 'reauthenticate',
-        'prompt': 'select_account'
-    });
     return provider;
 }
 
